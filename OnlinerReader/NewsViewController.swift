@@ -13,12 +13,16 @@ class NewsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.title = "Onliner.by feed"
-
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 140
+        prepareAppearance()
     }
-
+    
+    func prepareAppearance() {
+        navigationItem.title = "Onliner.by feed"
+        
+        //allows table view to use dynamic height cells
+        tableView.estimatedRowHeight = 140
+        tableView.rowHeight = UITableViewAutomaticDimension
+    }
 
 }
 
@@ -34,7 +38,7 @@ extension NewsViewController {
         
         cell.titleLabel.text = "Some Title"
         cell.dateLabel.text = "DATE"
-        cell.descriptionLabel.text = "A lot of text fsdfsfdsgdfsg fdsg sdfg dsfg sdfg sdfg dsfg sdfg sdfgdscgdsfg sdh sdg msdlkfg sdjgoi jsdoifgos dofgnds oingfisdni fugnisdubng sdfg check check"
+        cell.descriptionLabel.text = "A lot of text just for testfsdfsfdsgdfsg fdsg sdfg dsfg sdfg sdfg dsfg sdfg sdfgdscgdsfg sdh sdg msdlkfg sdjgoi jsdoifgos dofgnds oingfisdni fugnisdubng sdfg check check"
         
         return cell
     }

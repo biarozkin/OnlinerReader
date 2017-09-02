@@ -24,7 +24,7 @@
                                 <rect key="frame" x="0.0" y="28" width="320" height="140"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="yc5-HN-Yiv" id="GGu-0Z-M1M">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="139"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="140"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Crx-gm-ePu">
@@ -90,7 +90,7 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Root View Controller" id="fdq-bg-hul"/>
                     <connections>
-                        <segue destination="ghT-Ya-wDv" kind="show" id="kel-SP-Zvs"/>
+                        <segue destination="ghT-Ya-wDv" kind="show" identifier="toDetailVC" id="kel-SP-Zvs"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Ci-pT-fiq" userLabel="First Responder" sceneMemberID="firstResponder"/>
