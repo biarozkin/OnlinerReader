@@ -7,17 +7,28 @@
 //
 
 import Foundation
+import RealmSwift
 
-struct News {
-    var title: String? = nil
-    var pubDate: String? = nil      //NSDate?
-    var thumbnail: String? = nil    //UIImage?
-    var description: String? = nil
+class News: Object {
     
-    init(title: String?, pubDate: String?, thumbnail: String?, description: String?) {
-        self.title = title
-        self.pubDate = pubDate
-        self.thumbnail = thumbnail
-        self.description = description
+    dynamic var title: String = ""
+    dynamic var pubDate: String = ""     //NSDate?
+    dynamic var thumbnail: String = ""   //UIImage?
+    dynamic var fullDescription: String = ""
+
+    func saveToDisk(news: News) {
+        do {
+            let realm = try Realm()
+            try realm.write {
+                realm.add(news)
+            }
+        } catch let error as NSError {
+            print("Error while saving data to disk: \(error.localizedDescription)")
+        }
+    }
+
+    func loadFromDisk() -> Results<News> {
+        let news = try! Realm().objects(News.self).sorted(byKeyPath: "pubDate", ascending: true)
+        return news
     }
 }

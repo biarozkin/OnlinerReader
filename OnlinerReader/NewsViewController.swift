@@ -10,14 +10,16 @@ import UIKit
 
 class NewsViewController: UITableViewController {
 
+    let news = News().loadFromDisk()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        prepareAppearance()
+        prepareUI()
     }
     
-    func prepareAppearance() {
-        navigationItem.title = "Onliner.by feed"
+    func prepareUI() {
+        title = "auto.onliner.by"
         
         //allows table view to use dynamic height cells
         tableView.estimatedRowHeight = 140

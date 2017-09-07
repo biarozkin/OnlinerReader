@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9523355C1F59E99200E8B949 /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9523355B1F59E99200E8B949 /* News.swift */; };
+		952384761F6064D80044BBBE /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952384751F6064D80044BBBE /* Utils.swift */; };
+		95CFD4D01F5EF2B50079A843 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CFD4CF1F5EF2B50079A843 /* LoadingViewController.swift */; };
 		95D9063E1F596A2A00325197 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D9063D1F596A2A00325197 /* AppDelegate.swift */; };
 		95D906431F596A2A00325197 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95D906411F596A2A00325197 /* Main.storyboard */; };
 		95D906451F596A2A00325197 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 95D906441F596A2A00325197 /* Assets.xcassets */; };
@@ -23,6 +25,8 @@
 		00FC6439CFEE9A77D1D22D17 /* Pods-OnlinerReader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OnlinerReader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OnlinerReader/Pods-OnlinerReader.debug.xcconfig"; sourceTree = "<group>"; };
 		0E80F6FC847645164F5E4C08 /* Pods_OnlinerReader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OnlinerReader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9523355B1F59E99200E8B949 /* News.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = News.swift; sourceTree = "<group>"; };
+		952384751F6064D80044BBBE /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		95CFD4CF1F5EF2B50079A843 /* LoadingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		95D9063A1F596A2A00325197 /* OnlinerReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnlinerReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		95D9063D1F596A2A00325197 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		95D906421F596A2A00325197 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -95,6 +99,7 @@
 		95D9063C1F596A2A00325197 /* OnlinerReader */ = {
 			isa = PBXGroup;
 			children = (
+				952384751F6064D80044BBBE /* Utils.swift */,
 				9523355A1F59E98000E8B949 /* Model */,
 				95D906521F596DF400325197 /* View */,
 				95D9064F1F596DD000325197 /* Controllers */,
@@ -106,6 +111,7 @@
 		95D9064F1F596DD000325197 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				95CFD4CF1F5EF2B50079A843 /* LoadingViewController.swift */,
 				95D906501F596DE900325197 /* NewsViewController.swift */,
 				95D906561F5987E400325197 /* DetailViewController.swift */,
 			);
@@ -226,11 +232,15 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-OnlinerReader/Pods-OnlinerReader-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SWXMLHash/SWXMLHash.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SWXMLHash.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,12 +273,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95CFD4D01F5EF2B50079A843 /* LoadingViewController.swift in Sources */,
 				9523355C1F59E99200E8B949 /* News.swift in Sources */,
 				95D906511F596DE900325197 /* NewsViewController.swift in Sources */,
 				95D9063E1F596A2A00325197 /* AppDelegate.swift in Sources */,
 				95E9736A1F59B0E1002E6FF3 /* NewsManager.swift in Sources */,
 				95D906551F5971C300325197 /* NewsTableViewCell.swift in Sources */,
 				95D906571F5987E400325197 /* DetailViewController.swift in Sources */,
+				952384761F6064D80044BBBE /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

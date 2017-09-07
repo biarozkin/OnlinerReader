@@ -12,14 +12,17 @@ import SWXMLHash
 
 class NewsManager {
     
-    func getNewsData() {
-        getXml()
+    func getNews(completion: @escaping (Array<News>) -> () ) {
+        getXmlString { (dataString) in
+            let newsData = self.parseXmlString(dataString)
+            completion(newsData)
+        }
     }
     
-    private func getXml() {
-        guard let url = URL(string: "https://auto.onliner.by/feed")
+    fileprivate func getXmlString(completion: @escaping (String) -> () ) {
+        guard let url = URL(string: Utils.mainURL)
             else {
-                print("Rss url has been changed, please check")
+                print("Rss URL has been changed or it's unreachable at the moment, please check")
                 return
         }
         
@@ -30,27 +33,38 @@ class NewsManager {
                 return
             case .success:
                 if let data = response.result.value {
-                    self.parseXml(string: data)
+                    //completion(self.parseXmlUsing(string: data))
+                    completion(data)
                 }
             }
         }
     }
     
-    private func parseXml(string: String) {
+    fileprivate func parseXmlString(_ string: String) -> Array<News> {
         var newsArray: Array<News> = []
-        
         let xml = SWXMLHash.parse(string)
-        
         for elem in xml["rss"]["channel"]["item"].all {
             let title = elem["title"].element?.text
             let pubDate = elem["pubDate"].element?.text
             let thumbnail = elem["media:thumbnail"].element?.attribute(by: "url")?.text
             let description = elem["description"].element?.text
             
-            let newsObj = News(title: title, pubDate: pubDate, thumbnail: thumbnail, description: description)
-            //print("newObj: \(newsObj)")
+            let newsObject = News()
+            if let title = title {
+                newsObject.title = title
+            }
+            if let pubDate = pubDate {
+                newsObject.pubDate = Utils().convertDate(string: pubDate)
+            }
+            if let thumbnail = thumbnail {
+                newsObject.thumbnail = thumbnail
+            }
+            if let description = description {
+                newsObject.fullDescription = Utils().removeUnnecessary(string: description)
+            }
             
-            newsArray.append(newsObj)
+            newsArray.append(newsObject)
         }
+        return newsArray
     }
 }
