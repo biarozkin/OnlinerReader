@@ -173,6 +173,7 @@
 				TargetAttributes = {
 					95D906391F596A2A00325197 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 32QUXF5TSJ;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -402,6 +403,7 @@
 			baseConfigurationReference = 00FC6439CFEE9A77D1D22D17 /* Pods-OnlinerReader.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 32QUXF5TSJ;
 				INFOPLIST_FILE = OnlinerReader/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.biarozkin.OnlinerReader;
@@ -415,6 +417,7 @@
 			baseConfigurationReference = C070868969EADECAC6748E41 /* Pods-OnlinerReader.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 32QUXF5TSJ;
 				INFOPLIST_FILE = OnlinerReader/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.biarozkin.OnlinerReader;

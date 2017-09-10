@@ -16,31 +16,34 @@ class LoadingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        prepareUI()
-        
         //path to realm DB file
         //print(Realm.Configuration.defaultConfiguration.fileURL!)
+        prepareUI()
         
         NewsManager().getNews { (news) in
             for newsObj in news {
-                News().saveToDisk(news: newsObj)
+                let newsIsOld = News().isDublicate(newsObj: newsObj)
+                if !newsIsOld {
+                    News().saveToDisk(news: newsObj)
+                }
             }
-            //here we are ready to go to the next VC
+            
+            //here we are ready to go to the next VC    //?
+            self.loadingActivityIndicator.stopAnimating()
             self.performSegue(withIdentifier: "toNewsVC", sender: self)
         }
         
     }
+    
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
     
     fileprivate func prepareUI() {
         loadingActivityIndicator.hidesWhenStopped = true
         loadingActivityIndicator.startAnimating()
     }
     
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == "toNewsVC" {
-//            let newsVC = storyboard?.instantiateViewController(withIdentifier: "newsVC") as! NewsViewController
-//            navigationController?.pushViewController(newsVC, animated: true)
-//        }
-//    }
 }
 
