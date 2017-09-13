@@ -8,12 +8,19 @@
 
 import Foundation
 import UIKit
+import SystemConfiguration
+
+enum errorsDescription: String {
+    case badDataBaseAccess = "Возникли проблемы доступа к базе данных"
+    case networkDisabled = "Проверьте сетевое соединение!"
+    case dataLoadingError = "Не удалось загрузить новости"
+}
 
 class Utils {
     
     static let mainURL = "https://auto.onliner.by/feed"
     
-    func makeLinkClickable(url: String) -> NSAttributedString {
+    class func makeLinkClickable(url: String) -> NSAttributedString {
         //https://stackoverflow.com/questions/34425096/how-to-display-clickable-links-in-uitextview
         let stringName = "Читать далее.."
         let fontAttribute = [NSFontAttributeName: UIFont.systemFont(ofSize: 17)]
@@ -23,8 +30,7 @@ class Utils {
     }
     
     //working with NSDate
-    func convertDateStringIntoNSDate(dateString: String) -> Date? {
-        //workAround, figure out better solution
+    class func convertDateStringIntoNSDate(dateString: String) -> Date? {
         let devidedBySpaces = dateString.components(separatedBy: " ")
         let monthValue = devidedBySpaces[1].lowercased()
         var monthString = ""
@@ -55,7 +61,7 @@ class Utils {
             monthString = "12"
         default:
             monthString = "01"
-            print("Month doesn't recognized, plese have a look")
+            print("Month doesn't recognized, please have a look")
         }
         
         let rewrittenDate = devidedBySpaces[0] + " " + monthString + " " + devidedBySpaces[2] + " " + devidedBySpaces[3]
@@ -71,7 +77,7 @@ class Utils {
         }
     }
     
-    func shortDateFormat(string: String) -> String {
+    class func shortDateFormat(string: String) -> String {
         let devidedBySpaces = string.components(separatedBy: " ")
         let formattedDate = devidedBySpaces[1] + " " + devidedBySpaces[2] + " " + devidedBySpaces[3] + " " + devidedBySpaces[4]
         
@@ -79,7 +85,7 @@ class Utils {
     }
     
     //figure out better name for the func :)
-    func removeUnnecessary(string: String) -> String {
+    class func removeUnnecessary(string: String) -> String {
         let dividedByPTag = string.components(separatedBy: "<p>")
         var usefullTextOnly = dividedByPTag[2]
         let removedLastTag = String(usefullTextOnly.characters.dropLast(4))
@@ -87,6 +93,37 @@ class Utils {
         return removedLastTag
     }
     
+    class func showAlertWith(message: String, viewController: UIViewController, okHandler: @escaping (UIAlertAction) -> () ) {
+        let alertController = UIAlertController(title: "Что-то пошло не так..", message: message, preferredStyle: UIAlertControllerStyle.alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: okHandler)
+        alertController.addAction(okAction)
+        viewController.present(alertController, animated: true, completion: nil)
+    }
+    
+    //https://stackoverflow.com/questions/30743408/check-for-internet-connection-with-swift
+    class func isConnectedToNetwork() -> Bool {
+        var zeroAddress = sockaddr_in(sin_len: 0, sin_family: 0, sin_port: 0, sin_addr: in_addr(s_addr: 0), sin_zero: (0, 0, 0, 0, 0, 0, 0, 0))
+        zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
+        zeroAddress.sin_family = sa_family_t(AF_INET)
+        
+        let defaultRouteReachability = withUnsafePointer(to: &zeroAddress) {
+            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {zeroSockAddress in
+                SCNetworkReachabilityCreateWithAddress(nil, zeroSockAddress)
+            }
+        }
+        
+        var flags: SCNetworkReachabilityFlags = SCNetworkReachabilityFlags(rawValue: 0)
+        if SCNetworkReachabilityGetFlags(defaultRouteReachability!, &flags) == false {
+            return false
+        }
+        
+        // Working for Cellular and WIFI
+        let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
+        let needsConnection = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
+        let ret = (isReachable && !needsConnection)
+        
+        return ret
+    }
 }
 
 //MARK: - Strings extensions

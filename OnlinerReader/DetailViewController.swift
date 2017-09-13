@@ -38,12 +38,10 @@ class DetailViewController: UIViewController {
         let newsDescription = news.fullDescription.stripOutHtmlTags() + "\n\n"
         let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 18), NSForegroundColorAttributeName: UIColor.white]
         let attrNewsDescription: NSAttributedString = NSAttributedString(string: newsDescription, attributes: attributes)
-        let newsLink = Utils().makeLinkClickable(url: news.newsLink)
+        let newsLink = Utils.makeLinkClickable(url: news.newsLink)
         
         descriptionTextView.attributedText = attrNewsDescription + newsLink
         
-        NewsManager().getImageFromUrl(news.thumbnailUrl) { (image) in
-            self.newsImage.image = image
-        }
+        newsImage.image = UIImage(data: news.imageData)
     }
 }

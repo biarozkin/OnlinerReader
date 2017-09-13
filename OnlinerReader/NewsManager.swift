@@ -12,81 +12,68 @@ import SWXMLHash
 
 class NewsManager {
     
-    func getNews(completion: @escaping (Array<News>) -> () ) {
-        getXmlString { (dataString) in
-            let newsData = self.parseXmlString(dataString)
-            let reversedNews = Array(newsData.reversed())
-            completion(reversedNews)
+    class func getNews(completion: @escaping (Array<News>) -> () ) throws {
+        getXmlString { (news) in
+            if let news = news {
+                let reversedNews = Array(news.reversed())
+                completion(reversedNews)
+            }
         }
     }
     
-    fileprivate func getXmlString(completion: @escaping (String) -> () ) {
+    class fileprivate func getXmlString(completion: @escaping (Array<News>?) -> () ) {
         guard let url = URL(string: Utils.mainURL)
-            else {
-                print("Rss URL has been changed or it's unreachable at the moment, please check")
-                return
-        }
+            else { return }
         
         Alamofire.request(url).responseString { (response) in
             switch response.result {
             case .failure(let error):
-                print("Error while getting xml-data: \(error.localizedDescription)")
-                return
+                print("Error while getting data: \(error.localizedDescription)")
+                completion(nil) //
             case .success:
                 if let data = response.result.value {
-                    completion(data)
+                    if let news = parseXmlString(data) {
+                        completion(news)
+                    } else {
+                        print("Error while parsing xml")
+                        completion(nil)     //??
+                    }
                 }
             }
         }
     }
     
-    fileprivate func parseXmlString(_ string: String) -> Array<News> {
+    class fileprivate func parseXmlString(_ string: String) -> Array<News>? {
         var newsArray: Array<News> = []
         let xml = SWXMLHash.parse(string)
         for elem in xml["rss"]["channel"]["item"].all {
-            let title = elem["title"].element?.text
-            let pubDate = elem["pubDate"].element?.text
-            let newsLink = elem["link"].element?.text
-            let thumbnail = elem["media:thumbnail"].element?.attribute(by: "url")?.text
-            let description = elem["description"].element?.text
+            
+            guard let title = elem["title"].element?.text,
+                let pubDate = elem["pubDate"].element?.text,
+                let newsLink = elem["link"].element?.text,
+                let thumbnailUrlString = elem["media:thumbnail"].element?.attribute(by: "url")?.text,
+                let description = elem["description"].element?.text else {
+                    return nil
+            }
             
             let newsObject = News()
-            if let title = title {
-                newsObject.title = title
-            }
-            if let pubDate = pubDate {
-                newsObject.pubDate = Utils().shortDateFormat(string: pubDate)
-            }
-            if let newsLink = newsLink {
-                newsObject.newsLink = newsLink
-            }
-            if let thumbnail = thumbnail {
-                newsObject.thumbnailUrl = thumbnail
-            }
-            if let description = description {
-                newsObject.fullDescription = Utils().removeUnnecessary(string: description)
+            
+            newsObject.title = title
+            newsObject.pubDate = Utils.shortDateFormat(string: pubDate)
+            newsObject.newsLink = newsLink
+            newsObject.fullDescription = Utils.removeUnnecessary(string: description)
+            if let thumbnailUrl = URL(string: thumbnailUrlString) {
+                do {
+                    let imageData = try Data(contentsOf: thumbnailUrl)
+                    newsObject.imageData = imageData
+                } catch let error as NSError {
+                    print("Error while saving image as Data:\(error.localizedDescription)")
+                }
             }
             
             newsArray.append(newsObject)
         }
         return newsArray
-    }
-    
-    func getImageFromUrl(_ urlString: String, completion: @escaping (UIImage) -> () ) {
-        guard let url = URL(string: urlString)
-            else {
-                print("URL with image was retrieved unsuccessfully")
-                return
-        }
-        
-        Alamofire.request(url).response { (response) in
-            if let data = response.data {
-                let image = UIImage(data: data)
-                DispatchQueue.main.async {
-                    completion(image!)
-                }
-            }
-        }
     }
     
 }

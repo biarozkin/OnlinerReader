@@ -8,18 +8,33 @@
 
 import UIKit
 import QuartzCore
+import RealmSwift
 
 class NewsViewController: UITableViewController {
     
-    let news = News().loadFromDisk()
+    var news: Array<News> = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        prepareData()
         prepareUI()
     }
     
-    func prepareUI() {
+    private func prepareData() {
+        do {
+            guard let localNews = try News.loadFromDisk() else {
+                return
+            }
+            news = Array(localNews)
+        } catch let error as NSError {
+            print("Error while retrieving records from DB:\(error.localizedDescription)")
+            Utils.showAlertWith(message: errorsDescription.badDataBaseAccess.rawValue, viewController: self, okHandler: { (alertAction) in })
+        }
+        
+    }
+    
+    private func prepareUI() {
         let onlinerLogo = UIImage(named: "onlinerLogo.png")
         let imageView = UIImageView(image: onlinerLogo)
         navigationItem.titleView = imageView
@@ -51,12 +66,8 @@ extension NewsViewController {
         cell.titleLabel.layer.masksToBounds = true
         cell.titleLabel.layer.cornerRadius = 10
         cell.titleLabel.text = news[indexPath.row].title.stripOutHtmlTags()
-        
         cell.dateLabel.text = news[indexPath.row].pubDate
-        
-        NewsManager().getImageFromUrl(news[indexPath.row].thumbnailUrl) { (image) in
-            cell.newsImage.image = image
-        }
+        cell.newsImage.image = UIImage(data: news[indexPath.row].imageData)
         
         return cell
     }
