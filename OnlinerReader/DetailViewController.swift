@@ -19,7 +19,6 @@ class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupView()
     }
     
@@ -30,7 +29,6 @@ class DetailViewController: UIViewController {
     func setupView() {
         dateLabel.text = news.pubDate
         titleLabel.text = news.title.stripOutHtmlTags()
-        
         titleLabel.backgroundColor = UIColor.black.withAlphaComponent(0.2)
         titleLabel.layer.masksToBounds = true
         titleLabel.layer.cornerRadius = 10
@@ -38,8 +36,7 @@ class DetailViewController: UIViewController {
         let newsDescription = news.fullDescription.stripOutHtmlTags() + "\n\n"
         let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 18), NSForegroundColorAttributeName: UIColor.white]
         let attrNewsDescription: NSAttributedString = NSAttributedString(string: newsDescription, attributes: attributes)
-        let newsLink = Utils.makeLinkClickable(url: news.newsLink)
-        
+        let newsLink = news.newsLink.makeLinkClickableWith(header: "Читать далее..")
         descriptionTextView.attributedText = attrNewsDescription + newsLink
         
         newsImage.image = UIImage(data: news.imageData)

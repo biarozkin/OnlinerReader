@@ -16,41 +16,32 @@ class NewsViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         prepareData()
         prepareUI()
     }
     
     private func prepareData() {
-        do {
-            guard let localNews = try News.loadFromDisk() else {
-                return
-            }
-            news = Array(localNews)
-        } catch let error as NSError {
-            print("Error while retrieving records from DB:\(error.localizedDescription)")
-            Utils.showAlertWith(message: errorsDescription.badDataBaseAccess.rawValue, viewController: self, okHandler: { (alertAction) in })
+        let localNews = News.loadFromDisk()
+        if localNews == nil {
+            print("Error while retrieving records from DB")
+            self.showAlertWith(message: errorsDescription.badDataBaseAccess.rawValue, okHandler: { (alertAction) in })
+        } else {
+            news = Array(localNews!)    //if local news != nil, could we use force unwrapping than?
         }
-        
     }
     
     private func prepareUI() {
         let onlinerLogo = UIImage(named: "onlinerLogo.png")
         let imageView = UIImageView(image: onlinerLogo)
         navigationItem.titleView = imageView
-        
         navigationController?.navigationBar.barTintColor = UIColor.black
-        
-        ////allows table view to use dynamic height cells
-        //tableView.estimatedRowHeight = 140
-        //tableView.rowHeight = UITableViewAutomaticDimension
     }
     
     override var prefersStatusBarHidden: Bool {
         return true
     }
-    
 }
+
 
 //MARK: - UITableViewDataSource
 extension NewsViewController {
@@ -72,6 +63,7 @@ extension NewsViewController {
         return cell
     }
 }
+
 
 //MARK: - UITableViewDelegate
 extension NewsViewController {

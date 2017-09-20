@@ -25,34 +25,59 @@ class LoadingViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if Utils.isConnectedToNetwork() {
-            do {
-                try NewsManager.getNews { (news) in
-                    for newsObj in news {
-                        let newsIsOld = News.isDublicate(newsObj: newsObj)
-                        if !newsIsOld {
+        guard Reachability.isConnectedToNetwork() else {
+            showAlertWith(message: errorsDescription.networkDisabled.rawValue, okHandler: { (alertAction) in
+                self.goToNewsViewController()
+            })
+            return
+        }
+        
+        NewsManager.getNews { (news) in
+            if news == nil {
+                self.showAlertWith(message: errorsDescription.dataLoadingError.rawValue, okHandler: { (alertAction) in
+                    self.goToNewsViewController()
+                })
+            } else {
+                var lastLocalPubdate = Int()
+                var isRealmEmpty: Bool = true
+                isRealmEmpty = News.isRealmEmpty()
+                if !isRealmEmpty {
+                    lastLocalPubdate = News.getLastPubLocalDate()
+                    if lastLocalPubdate == 0 {
+                        self.showAlertWith(message: errorsDescription.dataLoadingError.rawValue, okHandler: { (alertAction) in
+                            self.goToNewsViewController()
+                            return
+                        })
+                    }
+                }
+                
+                for newsObj in news! {
+                    if isRealmEmpty {
+                        do {
+                            try News.saveToDisk(news: newsObj)
+                        } catch {
+                            self.showAlertWith(message: errorsDescription.badDataBaseAccess.rawValue, okHandler: { (alertAction) in
+                                self.goToNewsViewController()
+                                return
+                            })
+                        }
+                        isRealmEmpty = false
+                    } else {
+                        let isDublicate = News.checkNewsForDublicateUsing(lastLocalPubDate: lastLocalPubdate, newsObj: newsObj)
+                        if !isDublicate {
                             do {
                                 try News.saveToDisk(news: newsObj)
                             } catch {
-                                Utils.showAlertWith(message: errorsDescription.badDataBaseAccess.rawValue, viewController: self, okHandler: { (alertAction) in
+                                self.showAlertWith(message: errorsDescription.badDataBaseAccess.rawValue, okHandler: { (alertAction) in
                                     self.goToNewsViewController()
                                     return
                                 })
                             }
                         }
                     }
-                    //here we are ready to go to the next VC
-                    self.goToNewsViewController()
                 }
-            } catch {
-                Utils.showAlertWith(message: errorsDescription.dataLoadingError.rawValue, viewController: self, okHandler: { (alertAction) in
-                    self.goToNewsViewController()
-                })
-            }
-        } else {
-            Utils.showAlertWith(message: errorsDescription.networkDisabled.rawValue, viewController: self, okHandler: { (alertAction) in
                 self.goToNewsViewController()
-            })
+            }
         }
     }
     
@@ -70,6 +95,4 @@ class LoadingViewController: UIViewController {
         self.loadingActivityIndicator.stopAnimating()
         self.performSegue(withIdentifier: "toNewsVC", sender: self)
     }
-    
 }
-
